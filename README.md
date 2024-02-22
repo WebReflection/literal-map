@@ -2,7 +2,7 @@
 
 <sup>**Social Media Photo by [Pisit Heng](https://unsplash.com/@pisitheng) on [Unsplash](https://unsplash.com/)**</sup>
 
-[![build](https://github.com/WebReflection/literal-map/actions/workflows/node.js.yml/badge.svg)](https://github.com/WebReflection/literal-map/actions/workflows/node.js.yml)
+[![build](https://github.com/WebReflection/literal-map/actions/workflows/node.js.yml/badge.svg)](https://github.com/WebReflection/literal-map/actions/workflows/node.js.yml) [![Coverage Status](https://coveralls.io/repos/github/WebReflection/literal-map/badge.svg?branch=main)](https://coveralls.io/github/WebReflection/literal-map?branch=main)
 
 A Map that acts like an object literal to better reflect Python dictionaries in JS or allow literal to *Map* or *Map* to literals migrations.
 
