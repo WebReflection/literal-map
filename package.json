@@ -1,0 +1,36 @@
+{
+  "name": "literal-map",
+  "version": "0.0.0",
+  "description": "A Map that acts like an object literal to better reflect Python dictionaries in JS",
+  "main": "./cjs/index.js",
+  "scripts": {
+    "build": "npm run cjs && npm run test",
+    "cjs": "ascjs --no-default esm cjs",
+    "test": "c8 node test/index.js",
+    "coverage": "mkdir -p ./coverage; c8 report --reporter=text-lcov > ./coverage/lcov.info"
+  },
+  "keywords": ["Python", "Map", "Dictionary", "object", "literal"],
+  "author": "Andrea Giammarchi",
+  "license": "MIT",
+  "devDependencies": {
+    "ascjs": "^6.0.3",
+    "c8": "^9.1.0"
+  },
+  "module": "./esm/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./esm/index.js",
+      "default": "./cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebReflection/literal-map.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WebReflection/literal-map/issues"
+  },
+  "homepage": "https://github.com/WebReflection/literal-map#readme"
+}
