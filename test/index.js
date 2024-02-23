@@ -4,9 +4,12 @@ console.assert(JSON.stringify({...new LiteralMap}) === '{}');
 
 const lm = new LiteralMap([['a', 1]]);
 
+console.assert(lm instanceof LiteralMap);
+console.assert(lm instanceof Map);
 console.assert(lm.size === 1);
 console.assert(lm.a === 1);
 console.assert(lm.get('a') === 1);
+console.assert(LiteralMap.get(lm, 'a') === 1);
 console.assert('a' in lm);
 
 lm.b = 2;
@@ -49,3 +52,8 @@ lm.f = function () {
   return this === lm;
 };
 console.assert(lm.f());
+
+console.assert(LiteralMap.set(lm, 'a', 9) === lm);
+console.assert(lm.a === 9);
+
+console.assert(LiteralMap.size(lm) === lm.size);

@@ -1,4 +1,4 @@
-const { getOwnPropertyDescriptor, ownKeys } = Reflect;
+const { get, getOwnPropertyDescriptor, ownKeys } = Reflect;
 
 const getPropertyDescriptor = value => ({
   value,
@@ -7,9 +7,13 @@ const getPropertyDescriptor = value => ({
   configurable: true
 });
 
+const _ = Symbol();
+const prototype = 'prototype';
+
 const handler = {
   deleteProperty: (map, k) => map.has(k) ? map.delete(k) : delete map[k],
   get(map, k, proxy) {
+    if (k === _) return map;
     const own = map.has(k);
     const v = own ? map.get(k) : map[k];
     return typeof v === 'function' ? v.bind(own ? proxy : map) : v;
@@ -23,10 +27,26 @@ const handler = {
   set: (map, k, v) => (map.set(k, v), true),
 };
 
-export default class LiteralMap extends Map {
-  constructor(...args) {
-    /* c8 ignore start */
-    return new Proxy(super(...args), handler);
-    /* c8 ignore stop */
+export default new Proxy(
+  class LiteralMap extends Map {
+    constructor(...args) {
+      /* c8 ignore start */
+      return new Proxy(super(...args), handler);
+      /* c8 ignore stop */
+    }
+  },
+  {
+    get(Class, k, ...rest) {
+      return k !== prototype && k in Class[prototype] ?
+              (proxy, ...args) => {
+                const map = proxy[_];
+                let value = map[k];
+                if (typeof value === 'function')
+                  value = value.apply(map, args);
+                // prevent leaking the internal map elsewhere
+                return value === map ? proxy : value;
+              } :
+              get(Class, k, ...rest);
+    }
   }
-}
+);

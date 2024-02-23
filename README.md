@@ -34,7 +34,7 @@ JSON.stringify(lm);       // {"a":1,"c":3}
 [...lm];                  // [['a',1],['c',3]]
 ```
 
-### API Details
+## API Details
 
   * the class returns a *Proxy* of a map with a handler that simplifies access to, and manipulation of, the underlying data as object literal
   * all explicitly set fields/properties are stored in the map
@@ -44,3 +44,67 @@ JSON.stringify(lm);       // {"a":1,"c":3}
     * `structuredClone({...lm})` works
     * `structuredClone([...lm])` works
     * `structuredClone(new Map(lm))` also works
+
+### Differently from Python dictionaries
+
+In Python, there is a difference when `dict.get(...)` is accessed *VS* `dict["get"]`:
+
+  * the former will always use the inherited method even if `dict["get"] = 123` was previously used
+  * the latter will result into JSON field and it's accessed as such, not as the method
+
+In this regard, Python dictionaries are less surprise prone if a dictionary is created as:
+
+```python
+obj = {"get": 1, "set": 2}
+
+# test
+obj["get"]      # 1
+obj["set"]      # 2
+
+# valid and working!
+obj.get("get")  # 1
+```
+
+Unfortunately in JS it's not possible to disambiguate between direct access and square-brackets access, but because an object literal can be defined as such, some method might be shadowed:
+
+```js
+const obj = new LiteralMap(
+  Object.entries({"get": 1, "set": 2})
+);
+
+// test
+obj["get"];     // 1
+obj["set"];     // 2
+
+// unexpected thrown error
+obj.get("get"); // obj.get is not a function
+```
+
+### Explicit Workaround
+
+When explicit usage of underlying inherited method or fields is meant, and the instance is known to be a Python dictionary, it's always possible to forward through the class itself inherited utilities:
+
+```js
+// at runtime or trapped once: it's the same!
+const { get, set, size } = LiteralMap;
+
+const obj = new LiteralMap(
+  Object.entries({"get": 1, "set": 2})
+);
+
+// test
+obj.get;        // 1
+obj.set;        // 2
+
+// valid and working!
+size(obj);          // 2
+
+get(obj, "get");    // 1
+set(obj, "get", 3); // obj
+
+obj.get;            // 3
+```
+
+While ergonomics are not perfect with the suggested workaround, it is possible when non object literals are meant or expected to always do the right thing underneath and without penalizing performance in a relevant way.
+
+The internal map is also meant to never leak in the wild, so that undesired operations that could break expectations should never happen.
