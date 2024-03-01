@@ -60,3 +60,4 @@ console.assert(LiteralMap.size(lm) === lm.size);
 
 
 console.assert(JSON.stringify({...new LiteralMap([[{}, 1]])}) === '{}');
+console.assert(new LiteralMap([[{}, 1]]).constructor === LiteralMap);

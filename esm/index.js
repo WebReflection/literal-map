@@ -25,6 +25,7 @@ const handler = {
   get(map, k, proxy) {
     if (k === _) return map;
     const own = map.has(k);
+    if (!own && k === 'constructor') return constructor;
     const v = own ? map.get(k) : map[k];
     return typeof v === 'function' ? v.bind(own ? proxy : map) : v;
   },
@@ -37,7 +38,7 @@ const handler = {
   set: (map, k, v) => (map.set(k, v), true),
 };
 
-export default new Proxy(
+const constructor = new Proxy(
   class LiteralMap extends Map {
     constructor(...args) {
       /* c8 ignore start */
@@ -60,3 +61,5 @@ export default new Proxy(
     }
   }
 );
+
+export default constructor;
