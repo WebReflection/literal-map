@@ -7,6 +7,16 @@ const getPropertyDescriptor = value => ({
   configurable: true
 });
 
+// String or Symbol
+const sos = k => {
+  switch (typeof k) {
+    case 'string':
+    case 'symbol':
+      return true;
+  }
+  return false;
+}
+
 const _ = Symbol();
 const prototype = 'prototype';
 
@@ -23,7 +33,7 @@ const handler = {
     if (k in map) return getOwnPropertyDescriptor(map, k);
   },
   has: (map, k) => map.has(k) || k in map,
-  ownKeys: map => [...map.keys(), ...ownKeys(map)],
+  ownKeys: map => [...map.keys(), ...ownKeys(map)].filter(sos),
   set: (map, k, v) => (map.set(k, v), true),
 };
 

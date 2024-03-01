@@ -57,3 +57,6 @@ console.assert(LiteralMap.set(lm, 'a', 9) === lm);
 console.assert(lm.a === 9);
 
 console.assert(LiteralMap.size(lm) === lm.size);
+
+
+console.assert(JSON.stringify({...new LiteralMap([[{}, 1]])}) === '{}');
