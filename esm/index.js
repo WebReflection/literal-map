@@ -29,10 +29,11 @@ const handler = {
     const v = own ? map.get(k) : map[k];
     return typeof v === 'function' ? v.bind(own ? proxy : map) : v;
   },
-  getOwnPropertyDescriptor(map, k) {
-    if (map.has(k)) return getPropertyDescriptor(map.get(k));
-    if (k in map) return getOwnPropertyDescriptor(map, k);
-  },
+  getOwnPropertyDescriptor: (map, k) => (
+    map.has(k) ?
+      getPropertyDescriptor(map.get(k)) :
+      getOwnPropertyDescriptor(map, k)
+  ),
   has: (map, k) => map.has(k) || k in map,
   ownKeys: map => [...map.keys(), ...ownKeys(map)].filter(sos),
   set: (map, k, v) => (map.set(k, v), true),
