@@ -1,6 +1,6 @@
 {
   "name": "literal-map",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A Map that acts like an object literal to better reflect Python dictionaries in JS",
   "main": "./cjs/index.js",
   "scripts": {
