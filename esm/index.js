@@ -48,18 +48,18 @@ const constructor = new Proxy(
     }
   },
   {
-    get(Class, k, ...rest) {
-      return k !== prototype && k in Class[prototype] ?
-              (proxy, ...args) => {
-                const map = proxy[_];
-                let value = map[k];
-                if (typeof value === 'function')
-                  value = value.apply(map, args);
-                // prevent leaking the internal map elsewhere
-                return value === map ? proxy : value;
-              } :
-              get(Class, k, ...rest);
-    }
+    get: (Class, k, ...rest) => (
+      k !== prototype && k in Class[prototype] ?
+        (proxy, ...args) => {
+          const map = proxy[_];
+          let value = map[k];
+          if (typeof value === 'function')
+            value = value.apply(map, args);
+          // prevent leaking the internal map elsewhere
+          return value === map ? proxy : value;
+        } :
+        get(Class, k, ...rest)
+    )
   }
 );
 
